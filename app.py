@@ -1,49 +1,81 @@
-import pickle
+import streamlit as st
 import pandas as pd
+import numpy as np
+import pickle
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Load the trained model
-with open('NB_model.pkl', 'rb') as f:
-    model = pickle.load(f)
+with open("NB_model.pkl", "rb") as file:
+    model = pickle.load(file)
 
-def predict_heart_disease(data):
-    """
-    Predicts the likelihood of heart disease based on input data.
+# App title
+st.set_page_config(page_title="Heart Disease Prediction App", page_icon="💓", layout="wide")
 
-    Args:
-        data (dict): A dictionary containing the input features.
-                     Keys should match the column names used for training:
-                     "age", "sex", "cp", "trestbps", "chol", "fbs", "restecg",
-                     "thalach", "exang", "oldpeak", "slope", "ca", "thal"
+st.title("💓 Heart Disease Prediction using Machine Learning")
+st.write("This app predicts whether a person is likely to have heart disease based on medical attributes.")
 
-    Returns:
-        numpy.ndarray: An array containing the predicted class label (0-4).
-    """
-    # Convert input data to a pandas DataFrame
-    input_df = pd.DataFrame([data])
+# Sidebar input fields
+st.sidebar.header("Enter Patient Details")
 
-    # Make prediction
-    prediction = model.predict(input_df)
+def user_input_features():
+    age = st.sidebar.number_input("Age", 20, 100, 40)
+    sex = st.sidebar.selectbox("Sex (1 = male, 0 = female)", [1, 0])
+    cp = st.sidebar.selectbox("Chest Pain Type (0-3)", [0, 1, 2, 3])
+    trestbps = st.sidebar.number_input("Resting Blood Pressure", 80, 200, 120)
+    chol = st.sidebar.number_input("Serum Cholesterol (mg/dl)", 100, 600, 200)
+    fbs = st.sidebar.selectbox("Fasting Blood Sugar > 120 mg/dl (1 = true, 0 = false)", [1, 0])
+    restecg = st.sidebar.selectbox("Resting ECG Results (0-2)", [0, 1, 2])
+    thalach = st.sidebar.number_input("Max Heart Rate Achieved", 70, 220, 150)
+    exang = st.sidebar.selectbox("Exercise Induced Angina (1 = yes, 0 = no)", [1, 0])
+    oldpeak = st.sidebar.number_input("ST Depression Induced by Exercise", 0.0, 10.0, 1.0)
+    slope = st.sidebar.selectbox("Slope of Peak Exercise ST Segment (0-2)", [0, 1, 2])
+    ca = st.sidebar.selectbox("Number of Major Vessels (0-4)", [0, 1, 2, 3, 4])
+    thal = st.sidebar.selectbox("Thal (1 = normal; 2 = fixed defect; 3 = reversible defect)", [1, 2, 3])
 
-    return prediction
-
-if __name__ == '__main__':
-    # Example usage:
-    # Replace with actual data for prediction
-    new_patient_data = {
-        "age": 63.0,
-        "sex": 1.0,
-        "cp": 1.0,
-        "trestbps": 145.0,
-        "chol": 233.0,
-        "fbs": 1.0,
-        "restecg": 2.0,
-        "thalach": 150.0,
-        "exang": 0.0,
-        "oldpeak": 2.3,
-        "slope": 3.0,
-        "ca": 0.0,
-        "thal": 6.0
+    data = {
+        "age": age,
+        "sex": sex,
+        "cp": cp,
+        "trestbps": trestbps,
+        "chol": chol,
+        "fbs": fbs,
+        "restecg": restecg,
+        "thalach": thalach,
+        "exang": exang,
+        "oldpeak": oldpeak,
+        "slope": slope,
+        "ca": ca,
+        "thal": thal
     }
+    features = pd.DataFrame(data, index=[0])
+    return features
 
-    prediction = predict_heart_disease(new_patient_data)
-    print(f"Prediction for the new patient: {prediction[0]}")
+input_df = user_input_features()
+
+# Display input data
+st.subheader("Patient Details")
+st.write(input_df)
+
+# Prediction
+prediction = model.predict(input_df)
+prediction_proba = model.predict_proba(input_df)
+
+# Output
+st.subheader("Prediction Result")
+if prediction[0] == 1:
+    st.error("⚠️ The model predicts that this patient **is likely to have heart disease.**")
+else:
+    st.success("✅ The model predicts that this patient **is not likely to have heart disease.**")
+
+# Probability chart
+st.subheader("Prediction Probability")
+labels = ["No Disease", "Disease"]
+fig, ax = plt.subplots()
+sns.barplot(x=labels, y=prediction_proba[0])
+ax.set_ylabel("Probability")
+st.pyplot(fig)
+
+st.markdown("---")
+st.caption("Built with ❤️ using Streamlit and Naive Bayes Model (NB_model.pkl)")
+
