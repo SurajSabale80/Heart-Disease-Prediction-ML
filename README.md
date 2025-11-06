@@ -1,23 +1,16 @@
-# Heart Disease Prediction using Machine Learning
+# 💓 Heart Disease Prediction using Machine Learning
 
-This repository contains a machine learning project to predict heart disease based on the Cleveland Heart Disease dataset.
+This project predicts whether a person is likely to have heart disease based on medical attributes using a **Naive Bayes** model.
 
-## Project Overview
+## 🚀 Live Demo
+You can deploy this project on **[Streamlit Cloud](https://streamlit.io/cloud)**.
 
-The project explores different machine learning models to predict the presence of heart disease. The data is loaded, preprocessed, and various classification models are trained and evaluated. The best performing model (Gaussian Naive Bayes) is saved for future use in the `app.py` script.
+## 🧠 Model Used
+The trained model file: `NB_model.pkl`
 
-## Files in this Repository
+## ⚙️ Installation
 
-*   `README.md`: This file.
-*   `heart_disease_prediction.ipynb`: The Jupyter notebook containing the data loading, preprocessing, model training, and evaluation steps.
-*   `NB_model.pkl`: The serialized Gaussian Naive Bayes model trained on the dataset.
-*   `app.py`: A Python script to load the trained model and make predictions on new data.
-*   `requirements.txt`: A file listing the Python dependencies required to run the project.
-*   `processed.cleveland.data`: The dataset used for training and evaluation.
-
-## Setup Instructions
-
-1.  Clone the repository:
-2. cd <repository_name>
-3. pip install -r requirements.txt
-4. python app.py
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/<your-username>/Heart-Disease-Prediction-ML.git
+   cd Heart-Disease-Prediction-ML
