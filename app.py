@@ -69,16 +69,24 @@ else:
     st.success("✅ The model predicts that this patient **is not likely to have heart disease.**")
 
 # Probability chart
+# Probability chart
 st.subheader("Prediction Probability")
 
 labels = ["No Disease", "Disease"]
-prob_values = prediction_proba[0]  # e.g. [0.8, 0.2]
-prob_df = pd.DataFrame({"Condition": labels, "Probability": prob_values})
 
-fig, ax = plt.subplots()
-sns.barplot(x="Condition", y="Probability", data=prob_df, ax=ax)
-ax.set_ylim(0, 1)
-st.pyplot(fig)
+# Flatten the probabilities properly
+prob_values = np.ravel(prediction_proba)[0:2]  # ensures exactly 2 values
+
+# Make sure lengths match
+if len(prob_values) == len(labels):
+    prob_df = pd.DataFrame({"Condition": labels, "Probability": prob_values})
+    fig, ax = plt.subplots()
+    sns.barplot(x="Condition", y="Probability", data=prob_df, ax=ax)
+    ax.set_ylim(0, 1)
+    st.pyplot(fig)
+else:
+    st.warning("Model output shape mismatch — probability chart not displayed.")
+
 
 
 st.markdown("---")
