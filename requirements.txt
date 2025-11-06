@@ -1,0 +1,29 @@
+import pkg_resources
+import subprocess
+
+# Get a list of installed packages
+installed_packages = [d.project_name for d in pkg_resources.working_set]
+
+# List of libraries used in the notebook
+used_libraries = [
+    "pandas",
+    "sklearn",
+    "pickle"
+]
+
+# Filter for used libraries that are installed
+# Note: This is a basic approach and might not capture all dependencies or exact versions.
+# A more robust method would be to use pipreqs or pip freeze.
+required_packages = [pkg for pkg in installed_packages if pkg in used_libraries]
+
+# Get the version of each required package
+with open('requirements.txt', 'w') as f:
+    for pkg in required_packages:
+        try:
+            version = pkg_resources.get_distribution(pkg).version
+            f.write(f"{pkg}=={version}\n")
+        except pkg_resources.DistributionNotFound:
+            print(f"Warning: {pkg} not found in installed packages.")
+            f.write(f"{pkg}\n")
+
+print("requirements.txt generated successfully.")
