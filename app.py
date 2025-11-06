@@ -70,11 +70,16 @@ else:
 
 # Probability chart
 st.subheader("Prediction Probability")
+
 labels = ["No Disease", "Disease"]
+prob_values = prediction_proba[0]  # e.g. [0.8, 0.2]
+prob_df = pd.DataFrame({"Condition": labels, "Probability": prob_values})
+
 fig, ax = plt.subplots()
-sns.barplot(x=labels, y=prediction_proba[0])
-ax.set_ylabel("Probability")
+sns.barplot(x="Condition", y="Probability", data=prob_df, ax=ax)
+ax.set_ylim(0, 1)
 st.pyplot(fig)
+
 
 st.markdown("---")
 st.caption("Built with ❤️ using Streamlit and Naive Bayes Model (NB_model.pkl)")
